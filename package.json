@@ -1,0 +1,13 @@
+{
+    "name": "se.his.vector-renderer",
+    "version": "1.0.0",
+    "displayName": "Vector Renderer",
+    "description": "Custom Unity Package.",
+    "unity": "2020.1",
+    "dependencies": {},
+    "keywords": ["dsu", "skövde"],
+    "author": {
+        "name": "Emil Forslund",
+        "email": "emil.forslund@his.se"
+    }
+}
