@@ -1,0 +1,49 @@
+# Ignored Folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# Memory Captures
+/[Mm]emoryCaptures/
+
+# Meta data should only be ignored when the corresponding asset is also ignored
+!/**/*.meta
+
+# Cache directories of various applications
+.vs/
+.gradle/
+
+# Solution files should not be included
+# (since this is not the main project but a package.)
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.pidb.meta
+*.booproj
+*.svd
+*.pdb
+*.pdb.meta
+*.mdb
+*.mdb.meta
+*.opendb
+*.VC.db
+
+# Don't include crash info in repo
+sysinfo.txt
+crashlytics-build.properties
+
+# Build files are often very large
+*.apk
+*.aab
+*.unitypackage
