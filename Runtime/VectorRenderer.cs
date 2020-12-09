@@ -31,6 +31,8 @@ public sealed class VectorRenderer : MonoBehaviour {
 
     [NonSerialized] private int idx = 0;
     [NonSerialized] private int length = 0;
+
+    public int Length => Math.Min(length, Capacity);
     
     [NonSerialized] private MaterialPropertyBlock block;
     [NonSerialized] private List<Vector4> heads;
@@ -40,6 +42,9 @@ public sealed class VectorRenderer : MonoBehaviour {
 
     #region Public API
     public void Begin() {
+        if (mesh == null) {
+            RecreateMaterialAndMesh();
+        }
         idx = 0;
     }
 
@@ -59,7 +64,7 @@ public sealed class VectorRenderer : MonoBehaviour {
     #endregion
 
     #region Unity Event Functions
-    void Start() {
+    void OnEnable() {
         RecreateMaterialAndMesh();
     }
 
@@ -75,15 +80,17 @@ public sealed class VectorRenderer : MonoBehaviour {
         ColorProperty = Shader.PropertyToID("_Color");
         RadiusProperty = Shader.PropertyToID("_Radius");
         TipHeightProperty = Shader.PropertyToID("_TipHeight");
-        
-        var vectorMat = Resources.Load<Material>(VectorMaterialName);
-        if (vectorMat == null) {
-            Debug.LogError($"Failed to locate '{VectorMaterialName}'");
-            return;
-        }
-        material = vectorMat;
 
-        if (mesh != null) {
+        if (material == null) {
+            var vectorMat = Resources.Load<Material>(VectorMaterialName);
+            if (vectorMat == null) {
+                Debug.LogError($"Failed to locate '{VectorMaterialName}'");
+                return;
+            }
+            material = vectorMat;
+        }
+        
+        if (mesh == null) {
             mesh = new Mesh();
         }
             
@@ -127,9 +134,9 @@ public sealed class VectorRenderer : MonoBehaviour {
     }
 
     private void UpdateMaterialPropertyBlock() {
-        block.SetVectorArray(HeadProperty, heads.Take(length).ToList());
-        block.SetVectorArray(TailProperty, tails.Take(length).ToList());
-        block.SetVectorArray(ColorProperty, colors.Take(length).ToList());
+        block.SetVectorArray(HeadProperty, heads.Take(Length).ToList());
+        block.SetVectorArray(TailProperty, tails.Take(Length).ToList());
+        block.SetVectorArray(ColorProperty, colors.Take(Length).ToList());
     }
 
     private void UpdateMeshBounds() {
