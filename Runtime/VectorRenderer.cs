@@ -82,8 +82,11 @@ public sealed class VectorRenderer : MonoBehaviour {
             return;
         }
         material = vectorMat;
-        
-        mesh = new Mesh();
+
+        if (mesh != null) {
+            mesh = new Mesh();
+        }
+            
         UpdateMeshGeometry(mesh);
         
         block = new MaterialPropertyBlock();
@@ -212,6 +215,7 @@ public sealed class VectorRenderer : MonoBehaviour {
             tris.AddRange(new [] {j + 5, j + 6, k + 5});
         }
 
+        mesh.Clear();
         mesh.vertices = vertices.ToArray();
         mesh.normals = normals.ToArray();
         mesh.colors = colors.ToArray();
