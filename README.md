@@ -5,7 +5,7 @@ Play Mode.
 ## Installation
 You can add this package to your project by going to 
 `Window -> Package Manager -> + -> Add Package From git URL...` 
-and then enter `<this url>`.
+and then enter `https://github.com/UniversityOfSkovde/Vector-Renderer.git`.
 
 ## Usage
 Create an empty GameObject and add a `VectorRenderer`-component to it. 
