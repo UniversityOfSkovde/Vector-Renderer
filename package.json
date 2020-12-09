@@ -1,11 +1,11 @@
 {
     "name": "se.his.vector-renderer",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "displayName": "Vector Renderer",
-    "description": "Custom Unity Package.",
-    "unity": "2020.1",
+    "description": "Render vectors in Unity (works both in Edit and Play Mode)",
+    "unity": "2019.3",
     "dependencies": {},
-    "keywords": ["dsu", "skövde"],
+    "keywords": ["dsu", "skövde", "math", "drawing"],
     "author": {
         "name": "Emil Forslund",
         "email": "emil.forslund@his.se"
