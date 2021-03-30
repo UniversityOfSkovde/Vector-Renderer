@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using HelloWorld;
 using UnityEngine;
 
 namespace Vectors {
-    public sealed class VectorRenderer : MonoBehaviour {
+    public sealed class VectorRenderer : MonoBehaviour, IHasScope {
 
         #region Editable Properties
         [SerializeField] 
@@ -42,13 +43,18 @@ namespace Vectors {
         #endregion
 
         #region Public API
-        public void Begin() {
+        public AutoEnder Begin() {
             if (mesh == null) {
                 RecreateMaterialAndMesh();
             }
             idx = 0;
+            return new AutoEnder(this);
         }
 
+        /**
+         * Draws a vector in the scene between the two specified world space
+         * coordinates.
+         */
         public void Draw(Vector3 from, Vector3 to, Color color) {
             tails[idx] = from;
             heads[idx] = to;
