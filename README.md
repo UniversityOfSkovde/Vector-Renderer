@@ -15,6 +15,7 @@ it like this:
 ```csharp
 using System;
 using UnityEngine;
+using Vectors;
 
 [ExecuteAlways]
 [RequireComponent(typeof(VectorRenderer))]
