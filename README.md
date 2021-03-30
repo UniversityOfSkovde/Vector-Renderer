@@ -74,7 +74,7 @@ public class ExampleGUI : Editor {
 All vectors drawn between `.Begin()` and `.End()` will be in the same draw-call.
 
 ## License
-Copyright 2020 Emil Forslund
+Copyright 2020-2021 Emil Forslund
 
 Permission is hereby granted, free of charge, to any person obtaining a copy 
 of this software and associated documentation files (the "Software"), to deal 
