@@ -14,6 +14,7 @@ it like this:
 
 ```csharp
 using System;
+using UnityEditor;
 using UnityEngine;
 using Vectors;
 
@@ -23,6 +24,15 @@ public class Example : MonoBehaviour {
     
     [NonSerialized] 
     private VectorRenderer vectors;
+
+    [SerializeField]
+    public Vector3 vectorA = new Vector3(3, 0, 0);
+    
+    [SerializeField]
+    public Vector3 vectorB = new Vector3(0, 3, 0);
+    
+    [SerializeField]
+    public Vector3 vectorC = new Vector3(0, 0, 3);
     
     void OnEnable() {
         vectors = GetComponent<VectorRenderer>();
@@ -30,13 +40,30 @@ public class Example : MonoBehaviour {
 
     void Update()
     {
-        vectors.Begin();
-        
-        vectors.Draw(new Vector3(0, 0, 0), new Vector3(4, 0, 0), Color.red);
-        vectors.Draw(new Vector3(0, 0, 0), new Vector3(0, 4, 0), Color.green);
-        vectors.Draw(new Vector3(0, 0, 0), new Vector3(0, 0, 4), Color.blue);
-        
-        vectors.End();
+        using (vectors.Begin()) {
+            vectors.Draw(Vector3.zero, vectorA, Color.red);
+            vectors.Draw(Vector3.zero, vectorB, Color.green);
+            vectors.Draw(Vector3.zero, vectorC, Color.blue);
+        }
+    }
+}
+
+[CustomEditor(typeof(Example))]
+public class ExampleGUI : Editor {
+    void OnSceneGUI() {
+        var ex = (Example) target;
+        if (ex == null) return;
+
+        var a = Handles.PositionHandle(ex.vectorA, Quaternion.identity);
+        var b = Handles.PositionHandle(ex.vectorB, Quaternion.identity);
+        var c = Handles.PositionHandle(ex.vectorC, Quaternion.identity);
+
+        if (GUI.changed) {
+            ex.vectorA = a;
+            ex.vectorB = b;
+            ex.vectorC = c;
+            EditorUtility.SetDirty(target);
+        }
     }
 }
 ```
