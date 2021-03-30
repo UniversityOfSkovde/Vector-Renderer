@@ -51,14 +51,16 @@ public class Example : MonoBehaviour {
 [CustomEditor(typeof(Example))]
 public class ExampleGUI : Editor {
     void OnSceneGUI() {
-        var ex = (Example) target;
+        var ex = target as Example;
         if (ex == null) return;
 
+        EditorGUI.BeginChangeCheck();
         var a = Handles.PositionHandle(ex.vectorA, Quaternion.identity);
         var b = Handles.PositionHandle(ex.vectorB, Quaternion.identity);
         var c = Handles.PositionHandle(ex.vectorC, Quaternion.identity);
 
-        if (GUI.changed) {
+        if (EditorGUI.EndChangeCheck()) {
+            Undo.RecordObject(target, "Vector Positions");
             ex.vectorA = a;
             ex.vectorB = b;
             ex.vectorC = c;
