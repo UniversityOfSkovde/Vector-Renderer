@@ -1,4 +1,5 @@
 # Vector Renderer
+![Image showing the rendered vectors in the Scene View](https://media.githubusercontent.com/media/UniversityOfSkovde/Vector-Renderer/main/Docs/vectors.jpg)
 With this package, you can draw vectors in Unity that works both in Edit and 
 Play Mode.
 
