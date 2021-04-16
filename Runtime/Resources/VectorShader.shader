@@ -3,11 +3,11 @@
     Properties
     {
         //_MainTex ("Texture", 2D) = "white" {}
-        [PerRendererData] _Head ("Head", Vector) = (0, 1, 0)
-        [PerRendererData] _Tail ("Tail", Vector) = (0, 0, 0)
+        [PerRendererData] _Head ("Head", Vector) = (0, 1, 0, 0.3)
+        [PerRendererData] _Tail ("Tail", Vector) = (0, 0, 0, 0.5)
         [PerRendererData] _Color ("Color", Color) = (0.2, 0.2, 0.2, 1)
-        [PerRendererData] _Radius ("Radius", Float) = 0.3
-        [PerRendererData] _TipHeight ("TipHeight", Float) = 0.5
+        //[PerRendererData] _Radius ("Radius", Float) = 0.3
+        //[PerRendererData] _TipHeight ("TipHeight", Float) = 0.5
     }
     
     SubShader
@@ -42,11 +42,11 @@
             };
 
             UNITY_INSTANCING_BUFFER_START(Props)
-                UNITY_DEFINE_INSTANCED_PROP(float3, _Head)
-                UNITY_DEFINE_INSTANCED_PROP(float3, _Tail)
+                UNITY_DEFINE_INSTANCED_PROP(float4, _Head)
+                UNITY_DEFINE_INSTANCED_PROP(float4, _Tail)
                 UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-                UNITY_DEFINE_INSTANCED_PROP(float, _Radius)
-                UNITY_DEFINE_INSTANCED_PROP(float, _TipHeight)
+                //UNITY_DEFINE_INSTANCED_PROP(float, _Radius)
+                //UNITY_DEFINE_INSTANCED_PROP(float, _TipHeight)
             UNITY_INSTANCING_BUFFER_END(Props)
 
             sampler2D _MainTex;
@@ -59,9 +59,15 @@
                 UNITY_TRANSFER_INSTANCE_ID(v, o);
 
                 // Create a matrix from the direction
-                float3 head = UNITY_ACCESS_INSTANCED_PROP(Props, _Head);
-                float3 tail = UNITY_ACCESS_INSTANCED_PROP(Props, _Tail);
+                float4 headPacked = UNITY_ACCESS_INSTANCED_PROP(Props, _Head);
+                float4 tailPacked = UNITY_ACCESS_INSTANCED_PROP(Props, _Tail);
+                float3 head = headPacked.xyz;
+                float3 tail = tailPacked.xyz;
                 float3 dir = head - tail;
+
+                float radius    = headPacked.w;
+                float tipHeight = tailPacked.w;
+                
                 float3 z = normalize(dir);
                 float3 y = float3(0, 1, 0);
                 float3 x = float3(1, 0, 0);
@@ -73,7 +79,6 @@
                     y = normalize(cross(z, x));
                 }
 
-                float radius = UNITY_ACCESS_INSTANCED_PROP(Props, _Radius);
                 x *= radius * v.color.x;
                 y *= radius * v.color.x;
 
@@ -83,7 +88,6 @@
                     x.z, z.z, y.z
                 };
 
-                float tipHeight = UNITY_ACCESS_INSTANCED_PROP(Props, _TipHeight);
                 float3 pos = mul(orient, float3(v.position.x, v.position.y * tipHeight, v.position.z)) +
                     tail + dir * v.color.y;
 
