@@ -12,11 +12,22 @@ namespace Vectors {
         #region Editable Properties
         [SerializeField] 
         [Range(0.0f, 1.0f)]
+        [Tooltip("The radiu of the vectors (this value is overridden if a value is sent directly to Draw())")]
         private float radius = 0.3f;
         
-        [SerializeField] 
+        [SerializeField]
         [Range(0.0f, 1.0f)]
+        [Tooltip("The size of the tip of the vectors (this value is overridden if a value is sent directly to Draw())")]
         private float tipHeight = 0.7f;
+
+        [SerializeField] 
+        [Tooltip("The layer to use when rendering the vectors")]
+        private int layer = 0;
+
+        [SerializeField] 
+        [Tooltip("The camera used for rendering. If this is null, then vectors are rendered in all cameras.")] 
+        private Camera camera;
+        
         #endregion
         
         #region Public Properties
@@ -42,9 +53,8 @@ namespace Vectors {
         [NonSerialized] private int batchIdx = 0;
         
         private sealed class VectorBatch {
-            
-            private readonly Mesh mesh;
-            private readonly Material material;
+
+            private readonly VectorRenderer owner;
             private readonly Vector4[] heads;  // xyz = position, w = radius
             private readonly Vector4[] tails;  // xyz = position, w = tip height
             private readonly Vector4[] colors; // xyz = position, w = tip height
@@ -57,9 +67,8 @@ namespace Vectors {
 
             public int Length => length;
 
-            public VectorBatch(Mesh mesh, Material material) {
-                this.mesh = mesh;
-                this.material = material;
+            public VectorBatch(VectorRenderer owner) {
+                this.owner = owner;
                 
                 heads = new Vector4[Capacity];
                 tails = new Vector4[Capacity];
@@ -109,16 +118,16 @@ namespace Vectors {
                 }
                 
                 Graphics.DrawMeshInstanced(
-                    mesh,      // The mesh
-                    0,         // Submesh index
-                    material,  // The material
-                    matrices,  // Array of matrices
-                    length,    // Number of matrices
+                    owner.mesh,      // The mesh
+                    0,               // Submesh index
+                    owner.material,  // The material
+                    matrices,        // Array of matrices
+                    length,          // Number of matrices
                     block,
                     ShadowCastingMode.Off,  // Don't cast shadows
                     false,                  // Don't receive shadows
-                    0,                      // Render layer, maybe make this configurable?
-                    null,                   // The camera (null = all cameras
+                    owner.layer,            // Render layer, maybe make this configurable?
+                    owner.camera,           // The camera (null = all cameras
                     LightProbeUsage.Off,    // Don't use light probes
                     null                    // Don't use LightProbeProxyVolume
                 );
@@ -226,7 +235,6 @@ namespace Vectors {
 
         public void End() {
             EndCurrentBatch();
-            Debug.Log($"Batches: {batches.Count}, Vectors: {Length}");
             UpdateMeshBounds();
         }
         #endregion
@@ -263,7 +271,7 @@ namespace Vectors {
             UpdateMeshGeometry(mesh);
             
             batches.Clear();
-            batches.Add(new VectorBatch(mesh, material));
+            batches.Add(new VectorBatch(this));
             batchIdx = 0;
         }
         
@@ -283,7 +291,7 @@ namespace Vectors {
                 return currentBatch;
             }
 
-            var newBatch = new VectorBatch(mesh, material);
+            var newBatch = new VectorBatch(this);
             batches.Add(newBatch);
             newBatch.Begin();
             return newBatch;

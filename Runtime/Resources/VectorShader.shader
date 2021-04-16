@@ -2,12 +2,9 @@
 {
     Properties
     {
-        //_MainTex ("Texture", 2D) = "white" {}
         [PerRendererData] _Head ("Head", Vector) = (0, 1, 0, 0.3)
         [PerRendererData] _Tail ("Tail", Vector) = (0, 0, 0, 0.5)
         [PerRendererData] _Color ("Color", Color) = (0.2, 0.2, 0.2, 1)
-        //[PerRendererData] _Radius ("Radius", Float) = 0.3
-        //[PerRendererData] _TipHeight ("TipHeight", Float) = 0.5
     }
     
     SubShader
@@ -33,7 +30,6 @@
             };
             
             struct v2f {
-                //float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
                 float3 viewDir : TEXCOORD0;
@@ -45,8 +41,6 @@
                 UNITY_DEFINE_INSTANCED_PROP(float4, _Head)
                 UNITY_DEFINE_INSTANCED_PROP(float4, _Tail)
                 UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-                //UNITY_DEFINE_INSTANCED_PROP(float, _Radius)
-                //UNITY_DEFINE_INSTANCED_PROP(float, _TipHeight)
             UNITY_INSTANCING_BUFFER_END(Props)
 
             sampler2D _MainTex;
@@ -97,7 +91,6 @@
                 o.viewDir = normalize(pos - _WorldSpaceCameraPos);
                 o.normal = nor;
                 
-                //o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o, o.vertex);
                 return o;
             }
@@ -109,12 +102,10 @@
                 fixed4 col = UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
 
                 float3 normal = normalize(-i.normal);
-                //float diffuse = clamp(dot(i.normal, normalize(float3(1, 3, 2))), 0.0f, 1.0f);
                 float3 viewDir = normalize(i.viewDir);
                 float diffuse = clamp(dot(normal, viewDir), 0.0f, 1.0f);
                 col = lerp(0.5f * col, col, diffuse);
 
-                
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
