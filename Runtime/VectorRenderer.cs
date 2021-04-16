@@ -26,7 +26,7 @@ namespace Vectors {
 
         [SerializeField] 
         [Tooltip("The camera used for rendering. If this is null, then vectors are rendered in all cameras.")] 
-        private Camera camera;
+        private new Camera camera;
         
         #endregion
         
@@ -48,6 +48,7 @@ namespace Vectors {
         private static int TailProperty = Shader.PropertyToID("_Tail");
         private static int ColorProperty = Shader.PropertyToID("_Color");
 
+        [NonSerialized] private MaterialPropertyBlock block;
         [NonSerialized] private Material material;
         [NonSerialized] private Mesh mesh;
         [NonSerialized] private int batchIdx = 0;
@@ -58,7 +59,7 @@ namespace Vectors {
             private readonly Vector4[] heads;  // xyz = position, w = radius
             private readonly Vector4[] tails;  // xyz = position, w = tip height
             private readonly Vector4[] colors; // xyz = position, w = tip height
-            private readonly MaterialPropertyBlock block;
+            // private readonly MaterialPropertyBlock block;
             private Matrix4x4[] matrices;
             
             private int idx = 0;
@@ -74,10 +75,9 @@ namespace Vectors {
                 tails = new Vector4[Capacity];
                 colors = new Vector4[Capacity];
                 
-                block = new MaterialPropertyBlock();
-                block.SetVectorArray(HeadProperty, heads);
-                block.SetVectorArray(TailProperty, tails);
-                block.SetVectorArray(ColorProperty, colors);
+                owner.block.SetVectorArray(HeadProperty, heads);
+                owner.block.SetVectorArray(TailProperty, tails);
+                owner.block.SetVectorArray(ColorProperty, colors);
             }
 
             public void Begin() {
@@ -92,8 +92,8 @@ namespace Vectors {
                 var packedHead = new Vector4(head.x, head.y, head.z, radius);
                 var packedTail = new Vector4(tail.x, tail.y, tail.z, tip);
                 if (packedHead != heads[idx] 
-                && packedTail != tails[idx] 
-                && colors[idx] != (Vector4) color) {
+                ||  packedTail != tails[idx] 
+                ||  colors[idx] != (Vector4) color) {
                     heads[idx] = packedHead;
                     tails[idx] = packedTail;
                     colors[idx] = color;
@@ -106,9 +106,9 @@ namespace Vectors {
                 length = idx;
                 
                 if (dirty) {
-                    block.SetVectorArray(HeadProperty, heads);
-                    block.SetVectorArray(TailProperty, tails);
-                    block.SetVectorArray(ColorProperty, colors);
+                    owner.block.SetVectorArray(HeadProperty, heads);
+                    owner.block.SetVectorArray(TailProperty, tails);
+                    owner.block.SetVectorArray(ColorProperty, colors);
 
                     if (matrices == null || length > matrices.Length) {
                         matrices = Matrices().Take(length).ToArray();
@@ -118,16 +118,18 @@ namespace Vectors {
                 }
                 
                 Graphics.DrawMeshInstanced(
+                //Graphics.DrawMeshInstancedProcedural(
                     owner.mesh,      // The mesh
                     0,               // Submesh index
                     owner.material,  // The material
+                    //Bounds,
                     matrices,        // Array of matrices
                     length,          // Number of matrices
-                    block,
+                    owner.block,
                     ShadowCastingMode.Off,  // Don't cast shadows
                     false,                  // Don't receive shadows
                     owner.layer,            // Render layer, maybe make this configurable?
-                    owner.camera,           // The camera (null = all cameras
+                    owner.camera,           // The camera (null = all cameras)
                     LightProbeUsage.Off,    // Don't use light probes
                     null                    // Don't use LightProbeProxyVolume
                 );
@@ -139,8 +141,8 @@ namespace Vectors {
                     var max = min;
 
                     for (int i = 0; i < length; i++) {
-                        var head = heads[i];
-                        var tail = tails[i];
+                        var head = (Vector3) heads[i];
+                        var tail = (Vector3) tails[i];
 
                         if (min.x > head.x) min.x = head.x;
                         if (max.x < head.x) max.x = head.x;
@@ -158,7 +160,7 @@ namespace Vectors {
                         if (max.z < tail.z) max.z = tail.z;
                     }
             
-                    return new Bounds(0.5f * (max - min), max - min);
+                    return new Bounds(0.5f * (max - min), (max - min) * 1.1f);
                 }
             }
 
@@ -185,7 +187,7 @@ namespace Vectors {
          * forget to call 'end()'. Otherwise nothing will be drawn.
          */
         public AutoEnder Begin() {
-            if (mesh == null || material == null) {
+            if (mesh == null || material == null || block == null) {
                 RecreateMaterialAndMesh();
             }
             batchIdx = 0;
@@ -254,6 +256,10 @@ namespace Vectors {
             HeadProperty = Shader.PropertyToID("_Head");
             TailProperty = Shader.PropertyToID("_Tail");
             ColorProperty = Shader.PropertyToID("_Color");
+
+            if (block == null) {
+                block = new MaterialPropertyBlock();
+            }
             
             if (material == null) {
                 var vectorMat = Resources.Load<Material>(VectorMaterialName);
