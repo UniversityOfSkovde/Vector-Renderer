@@ -4,10 +4,10 @@ With this package, you can draw vectors in Unity that works both in Edit and
 Play Mode.
 
 ## Feature Requests
-[x] Batch multiple draws into one draw call
-[x] Use different color and radius / arrow
-[ ] Draw dashed arrows
-[ ] Different caps (not just arrows)
+- [x] Batch multiple draws into one draw call
+- [x] Use different color and radius / arrow
+- [ ] Draw dashed arrows
+- [ ] Different caps (not just arrows)
 
 ## Installation
 You can add this package to your project by going to 
