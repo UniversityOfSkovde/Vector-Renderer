@@ -63,7 +63,7 @@ namespace Vectors {
             private Matrix4x4[] matrices;
             
             private int idx = 0;
-            private bool dirty = false;
+            private bool dirty = true;
             private int length;
 
             public int Length => length;
@@ -104,6 +104,7 @@ namespace Vectors {
 
             public void End() {
                 length = idx;
+                if (length == 0) return;
                 
                 if (dirty) {
                     owner.block.SetVectorArray(HeadProperty, heads);
@@ -313,9 +314,15 @@ namespace Vectors {
         private void UpdateMeshBounds() {
             if (batches.Count == 0) return;
             var bounds = batches[0].Bounds;
+            if (!ValidFloats(bounds.min) || !ValidFloats(bounds.max)) {
+                bounds = new Bounds(Vector3.zero, Vector3.one);
+            }
             
             for (int i = 1; i < batches.Count; i++) {
                 var bb = batches[i].Bounds;
+                
+                if (!ValidFloats(bb.min) || !ValidFloats(bb.max))
+                    continue;
 
                 bounds.min = new Vector3(
                     Mathf.Min(bounds.min.x, bb.min.x),
@@ -329,6 +336,12 @@ namespace Vectors {
             }
             
             mesh.bounds = bounds;
+        }
+
+        private static bool ValidFloats(Vector3 v) {
+            return float.IsInfinity(v.x) || float.IsNaN(v.x)
+                || float.IsInfinity(v.y) || float.IsNaN(v.y)
+                || float.IsInfinity(v.z) || float.IsNaN(v.z);
         }
         
         private static void UpdateMeshGeometry(Mesh mesh) {
@@ -382,7 +395,7 @@ namespace Vectors {
                 colors.Add(new Color(1f, 1f, 0f));
                 
                 vertices.Add(Vector3.zero); // 7
-                normals.Add(tipNormal); // TODO: Not correct normal
+                normals.Add(tipNormal); // Not correct normal, but good enough
                 colors.Add(new Color(1f, 1f, 0f));
                 tris.AddRange(new [] {j + 5, j + 6, k + 5});
             }
