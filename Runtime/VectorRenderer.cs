@@ -329,9 +329,9 @@ namespace Vectors {
                     Mathf.Min(bounds.min.z, bb.min.z));
                 
                 bounds.max = new Vector3(
-                    Mathf.Min(bounds.max.x, bb.max.x),
-                    Mathf.Min(bounds.max.y, bb.max.y),
-                    Mathf.Min(bounds.max.z, bb.max.z));
+                    Mathf.Max(bounds.max.x, bb.max.x),
+                    Mathf.Max(bounds.max.y, bb.max.y),
+                    Mathf.Max(bounds.max.z, bb.max.z));
             }
             
             mesh.bounds = bounds;
