@@ -338,9 +338,9 @@ namespace Vectors {
         }
 
         private static bool ValidFloats(Vector3 v) {
-            return float.IsInfinity(v.x) || float.IsNaN(v.x)
-                || float.IsInfinity(v.y) || float.IsNaN(v.y)
-                || float.IsInfinity(v.z) || float.IsNaN(v.z);
+            return !(float.IsInfinity(v.x) || float.IsNaN(v.x)
+                  || float.IsInfinity(v.y) || float.IsNaN(v.y)
+                  || float.IsInfinity(v.z) || float.IsNaN(v.z));
         }
         
         private static void UpdateMeshGeometry(Mesh mesh) {
