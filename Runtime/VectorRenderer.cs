@@ -160,7 +160,7 @@ namespace Vectors {
                         if (max.z < tail.z) max.z = tail.z;
                     }
             
-                    return new Bounds(0.5f * (max - min), (max - min) * 1.1f);
+                    return new Bounds(0.5f * (max + min), (max - min) * 1.1f);
                 }
             }
 

@@ -241,8 +241,6 @@ namespace Vectors {
                     var min = (Vector3) positions[0];
                     var max = min;
 
-                    // TODO: This implementation assumes that all meshes span
-                    // the -1 to 1 cube around the origin unless transformed
                     for (int i = 0; i < length; i++) {
                         var p = (Vector3) positions[i];
                         var r = rotations[i];
@@ -267,7 +265,7 @@ namespace Vectors {
                         if (max.z < p1.z) max.z = p1.z;
                     }
             
-                    return new Bounds(0.5f * (max - min), (max - min) * 1.1f);
+                    return new Bounds(0.5f * (max + min), (max - min) * 1.1f);
                 }
             }
 
