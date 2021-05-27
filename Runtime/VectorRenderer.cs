@@ -12,7 +12,7 @@ namespace Vectors {
         #region Editable Properties
         [SerializeField] 
         [Range(0.0f, 1.0f)]
-        [Tooltip("The radiu of the vectors (this value is overridden if a value is sent directly to Draw())")]
+        [Tooltip("The radius of the vectors (this value is overridden if a value is sent directly to Draw())")]
         private float radius = 0.3f;
         
         [SerializeField]
@@ -58,8 +58,7 @@ namespace Vectors {
             private readonly VectorRenderer owner;
             private readonly Vector4[] heads;  // xyz = position, w = radius
             private readonly Vector4[] tails;  // xyz = position, w = tip height
-            private readonly Vector4[] colors; // xyz = position, w = tip height
-            // private readonly MaterialPropertyBlock block;
+            private readonly Vector4[] colors; // color rgb- (alpha not used)
             private Matrix4x4[] matrices;
             
             private int idx = 0;
