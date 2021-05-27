@@ -122,7 +122,7 @@ namespace Vectors {
                     bounds = new Bounds(Vector3.zero, Vector3.one);
                 }
             
-                for (int i = 1; i < batches.Count; i++) {
+                for (var i = 1; i < batches.Count; i++) {
                     var bb = batches[i].Bounds;
                 
                     if (!ValidFloats(bb.min) || !ValidFloats(bb.max))
@@ -143,9 +143,9 @@ namespace Vectors {
             }
 
             private static bool ValidFloats(Vector3 v) {
-                return float.IsInfinity(v.x) || float.IsNaN(v.x)
-                    || float.IsInfinity(v.y) || float.IsNaN(v.y)
-                    || float.IsInfinity(v.z) || float.IsNaN(v.z);
+                return !(float.IsInfinity(v.x) || float.IsNaN(v.x)
+                      || float.IsInfinity(v.y) || float.IsNaN(v.y)
+                      || float.IsInfinity(v.z) || float.IsNaN(v.z));
             }
         }
         
