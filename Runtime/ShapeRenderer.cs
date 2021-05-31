@@ -423,7 +423,7 @@ namespace Vectors {
             mesh.vertices = vertices.ToArray();
             mesh.normals = normals.ToArray();
             mesh.triangles = tris.ToArray();
-            mesh.RecalculateBounds(MeshUpdateFlags.Default);
+            mesh.RecalculateBounds();
         }
         
         private static void GenerateCylinderGeometry(Mesh mesh, int slices) {
@@ -475,7 +475,7 @@ namespace Vectors {
             mesh.vertices = vertices.ToArray();
             mesh.normals = normals.ToArray();
             mesh.triangles = tris.ToArray();
-            mesh.RecalculateBounds(MeshUpdateFlags.Default);
+            mesh.RecalculateBounds();
         }
         #endregion
     }
